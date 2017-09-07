@@ -14,10 +14,19 @@ module Minesweeper
         end
       end
 
+      # Fisher-Yates to select tiles to be mines...?
+      selectable = (1...total_tiles).to_a
       mines.times do
-        i,j = rng.rand(1...total_tiles).divmod(board_size)
+        selected_index = rng.rand(selectable.size)
+
+        # convert number to coordinates
+        i,j = selectable[selected_index].divmod(board_size)
+
         mined_tile = @board[i][j]
         mined_tile.mine = true
+
+        # remove so we won't pick this spot again
+        selectable.delete_at(selected_index)
       end
 
       # populate neighbors
