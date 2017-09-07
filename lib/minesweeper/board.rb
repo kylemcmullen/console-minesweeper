@@ -30,17 +30,11 @@ module Minesweeper
       end
 
       # populate neighbors
-      count = 0
       @board.each_with_index do |row, i|
         row.each_with_index do |row, j|
-          tile = @board[i][j]
-          tile_neighbors = []
-          count += 1
-
           each_adjacent_tile(i,j) do |tile, _i, _j|
             @board[i][j].neighbors= @board[i][j].neighbors + 1 if tile.mine
           end
-
         end
       end
     end
@@ -51,6 +45,7 @@ module Minesweeper
       tile = @board[i][j]
 
       tile.step
+
       reveal_safe_neighbors(i,j)
     end
 
@@ -93,6 +88,7 @@ module Minesweeper
           _i = i+vertical_offset
           _j = j+horizontal_offset
 
+          # check edges and self-references
           next if _i == i && _j == j
           next if _i < 0 || _i >= @board.size
           next if _j < 0 || _j >= @board.size
