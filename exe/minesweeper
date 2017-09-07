@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+require "minesweeper"
+
+board = Minesweeper::Board.new
+
+puts <<END
+Hello!  Welcome to Minesweeper.
+
+Available commands are:
+step I J    to step on a square
+flag I J    to flag a square
+quit        to exit the game
+
+Good luck!
+END
+
+begin
+  status = :incomplete
+  until status == :winner || status == :quitter
+    board.print
+    command = gets.chomp
+    case command
+      when /^flag/
+        if command =~ /^flag\s+(\d+)\s+(\d+)\s*/
+          board.toggle_flag($1.to_i,$2.to_i)
+        else
+          puts 'warn: command not formatted correctly: /^flag (\d+) (\d+)/'
+        end
+      when /^step/
+        if command =~ /^step\s+(\d+)\s+(\d+)\s*/
+          board.step($1.to_i,$2.to_i)
+        else
+          puts 'warn: command not formatted correctly: /^step (\d+) (\d+)/'
+        end
+      when 'quit'
+        status = :quitter
+        break
+      else
+        puts "unrecognized command: #{command}"
+    end
+
+    status = :winner if board.complete?
+  end
+
+  case status
+    when :winner
+      board.print
+      puts 'Winner!'
+    when :quitter
+      puts 'Quitters never win'
+  end
+
+rescue Minesweeper::MineSteppedOnException
+  board.print
+  puts 'You lose!  Good day, sir!'
+end
