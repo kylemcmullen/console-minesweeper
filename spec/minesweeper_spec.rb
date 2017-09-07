@@ -48,7 +48,37 @@ describe Minesweeper do
   end
 
   it "reveals adjacent safe tiles recursively" do
-    
+    board = Minesweeper::Board.new(5,8,Random.new(0))
+    # Make outer border mines
+    board.board.each_index do |i|
+      board.board.each_index do |j|
+        if i % 4 == 0 || j % 4 == 0
+          board.board[i][j].mine=true
+          board.board[i][j].neighbors=2
+        else
+          board.board[i][j].mine=false
+          if (i == 1 || i == 3) && (j == 1 || j == 3)
+            board.board[i][j].neighbors=5
+          else
+            board.board[i][j].neighbors=3
+          end
+
+        end
+      end
+    end
+    board.board[2][2].neighbors=0
+    # Middle box should be revealed
+    board.step(2,2)
+    board.board.each_index do |i|
+      board.board.each_index do |j|
+        if i % 4 == 0 || j % 4 == 0
+          expect(board.board[i][j].revealed).to be false
+        else
+          expect(board.board[i][j].revealed).to be true
+        end
+      end
+    end
+
   end
 
   it "can flag a tile as a mine" do

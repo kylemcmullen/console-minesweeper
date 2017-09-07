@@ -1,7 +1,7 @@
 module Minesweeper
   class Board
 
-    attr_reader :board
+    attr_accessor :board
 
     def initialize(board_size=9, mines = 10, rng=Random.new)
       total_tiles = board_size ** 2
